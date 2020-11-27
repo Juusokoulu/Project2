@@ -1,0 +1,149 @@
+<HTML>
+<head>
+<style>
+html, body {
+    height: 100%; width: 100%;
+}
+
+h1 {
+    text-align: center;
+    font-size: 250%;
+    margin-top: 60px;
+}
+ h3 {
+     text-align: center;
+     font-size: 150%;
+ }
+
+ label, select {
+    display: inline-block;
+    vertical-align: middle;
+    
+}
+
+ td {
+  border: 2px solid rgb(235, 212, 9);
+  padding: 3px;
+ }
+
+ table {
+     text-align: center;
+ }
+
+
+</style>
+<script>
+
+//Otetaan data finnkinolta ja se saa parametrina urlin
+function getData(url) { 
+var xmlhttp = new XMLHttpRequest(); 
+           
+        xmlhttp.open("GET", url, true); 
+        xmlhttp.send();
+
+        xmlhttp.onreadystatechange = function() { 
+            if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var data = xmlhttp.responseXML; //tallennetaan tiedot data muuttujaan 
+
+         // Luodaan muuttujat eri tageille  ja käytetään data muuttujaa     
+        var elokuvanNimi = data.getElementsByTagName("Title"); 
+        var elokuvanLaji = data.getElementsByTagName("Genres");
+        var elokuvanKuva = data.getElementsByTagName("EventSmallImagePortrait");
+        var elokuvanSali = data.getElementsByTagName("TheatreAuditorium");
+        var elokuvanRajoitus = data.getElementsByTagName("RatingImageUrl")
+        var elokuvanKesto = data.getElementsByTagName("LengthInMinutes");
+    
+
+        var x = "<table>"; //Luodaan taulukko johon elokuvien infot laitetaan
+            
+    for (var i=0; i < elokuvanNimi.length; i++){ //looppi jotta tiedot menee samassa elokuvan nimen kanssa   
+           
+        x += "<tr"
+        x += "<td>" + "</td>";//Jostain syystä ainut keino saada kaikki muuttujat samalle riville???
+        x += "<td>" + elokuvanNimi[i].innerHTML + "</td>";//nimi taulukkoon
+        x += '<td><img src="'+elokuvanKuva[i].innerHTML+'"></td>';//kuva taulukkoon
+        x += "<td>" + elokuvanLaji[i].innerHTML + "</td>";//genre taulukkoon
+        x += "<td>" + elokuvanSali[i].innerHTML + "</td>";//teatterin sali taulukkoon
+        x += "<td>" + elokuvanKesto[i].innerHTML + "</td>";//elokuvan kesto
+        x += '<td><img src="'+elokuvanRajoitus[i].innerHTML+'"></td>';//ikäraja
+        x += "</tr>";
+    }
+    //taulukko kiinni
+    x+="</table>";
+    //taulukko diviin
+    document.getElementById("elokuvat").innerHTML = x;
+
+            }
+        }
+}
+
+function valintaData() { //funktio jolla saadaan oikean teatterin nimi yhdistettyä käyttäjän valintaan
+var valinta = document.getElementById("mySelect").value; 
+//Käytetään jokaisen teatterin omaa urlia ja se laitetaan parametrilla getData funktioon
+//jos käyttäjän valitsema (arvo) teatteri on "x" niin laitetaan siihen sen teatterin urli
+//en oikein keksinyt muuta tapaa tätä tehdä ja tämä näyttää toimivan
+if (valinta=="Tennispalatsi") { 
+var url1 = "https://www.finnkino.fi/xml/Schedule/?area=1033"; //Tennispalatsi
+getData(url1); //parametrilla getData funktion suoritettavaksi
+}
+if (valinta=="Omena") { 
+var url2 = "https://www.finnkino.fi/xml/Schedule/?area=1039"; //Omena      
+getData(url2);
+}
+if (valinta=="Flamingo") { 
+var url3 = "https://www.finnkino.fi/xml/Schedule/?area=1013"; //Flamingo
+getData(url3);    
+}
+if (valinta=="Itis") { 
+var url4 = "https://www.finnkino.fi/xml/Schedule/?area=1045"; //Itis
+getData(url4);
+}
+if (valinta=="Kinopalatsi") {
+var url5 = "https://www.finnkino.fi/xml/Schedule/?area=1031"; //Kinopalatsi
+getData(url5);
+}
+if (valinta=="Sello") {
+var url6 = "https://www.finnkino.fi/xml/Schedule/?area=1038"; //Sello
+getData(url6);    
+}
+if (valinta=="valitse") {
+document.getElementById("elokuvat").innerHTML = ""; //valitse kohdassa ei näytetä mitään
+}
+}
+
+
+
+
+
+
+
+</script>
+</head>
+
+
+<body style="background-color: dimgrey;" id="myDiv">  
+<h1>Finnkinon elokuvat</h1>
+<h3>Aloita valitsemalla teatteri</h3>
+<label for="mySelect">Valitse teatteri:</label>
+<select name="mySelect" id="mySelect" style="width:200px;">
+    <option value="Valitse">Valitse...</option>
+    <option value="Tennispalatsi">Tennispalatsi, Helsinki</option>        
+    <option value="Omena">Omena, Espoo</option>
+    <option value="Flamingo">Flamingo, Vantaa</option>
+    <option value="Itis">Itis, Helsinki</option>
+    <option value="Kinopalatsi">Kinopalatsi, Helsinki</option>
+    <option value="Sello">Sello, Espoo</option>    
+  </select>
+  <div id="elokuvat"></div>
+
+
+
+
+</body>
+</html>
+<script>
+//Dynaamisesti lisätty onchange metodi,     
+//kesti kauan ennenkö netistä löysin vastauksen että tämä pitää laittaa html tagien alle
+//ei suostunut latamaan tätä ennen kuin laitoin tämän html tagien jälkeen   
+document.getElementById("mySelect").addEventListener("change", valintaData);
+</script>
